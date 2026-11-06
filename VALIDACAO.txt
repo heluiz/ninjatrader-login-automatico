@@ -1,0 +1,21 @@
+VALIDACAO DESTE PACOTE - 27/10/2026
+
+Realizado no ambiente de criacao (Linux):
+- Analise sintatica com tree-sitter dos dois scripts PowerShell e do auxiliar
+  C#: nenhum erro de sintaxe encontrado.
+- Revisao das referencias .NET, argumentos dos inicializadores e arquivos.
+- Conferencia da integridade e lista de arquivos do ZIP.
+
+Nao executado neste ambiente:
+- Compilacao do C# contra UIAutomation do Windows/.NET Framework.
+- Criptografia DPAPI no Windows.
+- Deteccao dos controles ou login real em uma instalacao do NinjaTrader.
+- Importacao autenticada de um item real do Bitwarden CLI.
+
+VALIDAR-WINDOWS.cmd permite verificar os tres primeiros requisitos locais
+(sintaxe, compilacao e DPAPI) no computador Windows usando dados ficticios.
+DIAGNOSTICAR.cmd verifica a identificacao da tela inicial do NinjaTrader.
+Esses dois comandos nao enviam login e nao iniciam operacoes de trading.
+
+Trata-se de uma primeira versao para teste local, sem garantia de
+compatibilidade com todas as versoes/temas/idiomas do NinjaTrader.

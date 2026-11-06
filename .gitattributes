@@ -1,0 +1,6 @@
+# Preserva os arquivos byte a byte: CRLF nos .cmd e BOM UTF-8 nos .ps1 e .cs,
+# como o Windows PowerShell 5.1 e o cmd.exe esperam.
+*.cmd -text
+*.ps1 -text
+*.cs  -text
+*.txt -text

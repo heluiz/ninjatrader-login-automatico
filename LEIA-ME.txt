@@ -1,0 +1,90 @@
+NINJATRADER - LOGIN AUTOMATICO v0.1.0
+Windows 10/11 e Windows PowerShell 5.1.
+
+COMO USAR
+1. Extraia TODO o ZIP para uma pasta.
+2. Abra CONFIGURAR.cmd com dois cliques, como seu usuario normal do Windows.
+3. Se solicitado, selecione o NinjaTrader.exe instalado no computador.
+4. Informe o usuario e a senha da TELA INICIAL do NinjaTrader. Pode copiar
+   os dois do Bitwarden. A senha e informada somente na janela local do Windows.
+5. Use o novo atalho "NinjaTrader - Login automatico" na Area de Trabalho.
+
+O atalho abre o NinjaTrader, espera a janela inicial, preenche os campos e
+aciona Entrar uma vez. Aguarde sem usar o teclado ou trocar de janela durante
+o preenchimento. Voce tambem pode usar ABRIR-NINJA.cmd.
+
+ARMAZENAMENTO
+A senha do NinjaTrader fica criptografada por Windows DPAPI, vinculada ao
+seu usuario e ao computador. O nome de usuario fica legivel no arquivo local.
+Os arquivos ficam em %LOCALAPPDATA%\Heluiz-NinjaAutoLogin, com permissoes
+restritas ao seu usuario e SYSTEM. Nao ha envio de credenciais para terceiros.
+O login continua sendo enviado pelo proprio NinjaTrader aos seus servidores.
+Programas executados no contexto do mesmo usuario podem acessar essa senha;
+a criptografia local nao protege contra comprometimento dessa conta Windows.
+
+Este pacote nao pede nem guarda a senha mestra ou a sessao do Bitwarden.
+O atalho nao depende de deixar o Bitwarden aberto. Se alterar a senha do
+NinjaTrader, execute CONFIGURAR.cmd de novo. Ao mudar de PC ou usuario
+Windows, configure de novo.
+
+IMPORTAR DIRETO DO BITWARDEN (OPCIONAL)
+O uso comum acima dispensa instalar qualquer componente adicional.
+Para importar um unico item por script, instale o Bitwarden Password Manager
+CLI oficial (comando bw), crie um item de tipo Login com o usuario e senha
+iniciais do NinjaTrader e execute os comandos abaixo no Windows PowerShell.
+
+  bw login
+  $env:BW_SESSION = bw unlock --raw
+  bw list items --search NinjaTrader | ConvertFrom-Json | Select-Object id,name
+
+Copie o UUID do item correto (coluna id). Na pasta extraida do pacote:
+
+  powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\NinjaAutoLogin.ps1 -Configure -BitwardenItemId "COLE-O-UUID-AQUI"
+
+Depois da configuracao:
+
+  bw lock
+  Remove-Item Env:\BW_SESSION -ErrorAction SilentlyContinue
+
+IMPORTANTE: esta opcao importa uma copia LOCAL do login selecionado, com a
+senha criptografada pelo Windows. Nao sincroniza mudancas futuras do cofre.
+O app desktop Bitwarden desbloqueado nao equivale a uma sessao CLI aberta.
+Nunca cole sua senha mestra dentro dos arquivos .ps1, .cmd ou do historico.
+
+LIMITES E DIAGNOSTICO
+Nao foi possivel testar este pacote contra uma instalacao real do NinjaTrader
+neste ambiente. Foram feitas verificacoes locais descritas em VALIDACAO.txt.
+Os controles acessiveis podem variar por versao, tema e idioma. Se a janela
+nao for reconhecida, o script para e nao tenta adivinhar campos por TAB.
+Abra DIAGNOSTICAR.cmd com a tela de login visivel para verificar a deteccao.
+O diagnostico nao le nem preenche credenciais e nao exporta o conteudo da tela.
+Opcionalmente, use VALIDAR-WINDOWS.cmd para verificar sintaxe, compilar o
+auxiliar e testar a protecao do Windows usando uma senha ficticia. Esse teste
+nao abre o NinjaTrader nem acessa suas credenciais reais.
+
+O Windows precisa estar com a sessao aberta e desbloqueada. Em VPS/RDP, deixe
+a area de trabalho interativa disponivel para o teste; tela bloqueada ou RDP
+desconectado pode impedir o preenchimento. Nao e um servico sem interface.
+
+Execute o NinjaTrader e o script com o mesmo nivel de permissao, de preferencia
+sem Administrador. Nao use o atalho enquanto mantiver Ctrl/Alt/Shift/Windows
+pressionados. Se o foco mudar durante a digitacao, o preenchimento e interrompido.
+O script usa caracteres Unicode; simbolos da senha nao viram comandos SendKeys.
+Ele nao usa a area de transferencia para transportar a senha.
+
+Entrar e acionado uma unica vez. Confira o resultado no NinjaTrader. Se houver
+MFA, CAPTCHA, termos ou outra confirmacao, conclua pela interface. O pacote
+nao altera conexoes, contas, estrategias ou ordens da plataforma.
+
+Os .cmd usam ExecutionPolicy Bypass apenas no processo que executa o arquivo;
+nao mudam a politica global do Windows. Politicas corporativas podem bloquear
+a execucao; nesse caso e necessario seguir a administracao do computador.
+
+Para trocar credenciais: execute CONFIGURAR.cmd novamente.
+Para remover o inicializador, sua credencial e atalho: execute REMOVER.cmd.
+Nao e necessario desinstalar ou reinstalar o NinjaTrader.
+
+FONTES TECNICAS
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/export-clixml?view=powershell-5.1
+https://bitwarden.com/help/cli/
+https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput
